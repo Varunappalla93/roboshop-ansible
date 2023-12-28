@@ -67,7 +67,7 @@
 
   # - name: print the count
   #   ansible.builtin.debug:
-  #     msg: "product count: {{user_count}}"
+  #     msg: "user count: {{user_count}}"
 
   - name: load user data
     ansible.builtin.command: mongo --host mongodb.daws76s.online < /app/schema/user.js
