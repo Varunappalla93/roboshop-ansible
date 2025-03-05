@@ -1,0 +1,14 @@
+[mongodb]
+mongodb.appalla.shop
+
+
+[catalogue]
+catalogue.appalla.shop
+
+
+[user]
+user.appalla.shop
+
+
+[cart]
+cart.appalla.shop
