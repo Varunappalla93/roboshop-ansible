@@ -3,9 +3,15 @@
   become: yes
   tasks:
     - name: disable old nodejs and enable nodejs
-      ansible.builtin.command: dnf module disable nodejs -y; dnf module enable nodejs:18 -y
+      ansible.builtin.shell: dnf module disable nodejs -y; dnf module enable nodejs:18 -y
 
     - name: install nodejs
       ansible.builtin.dnf:
         name: nodejs
         state: present
+
+
+
+
+
+#  ansible-playbook -i inventory -e ansible_user=centos -e ansible_password=DevOps321 catalogue.yaml
