@@ -40,6 +40,20 @@
         src: catalogue.service
         dest: /etc/systemd/system/catalogue.service
 
+    - name: daemon reload and start
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: copy mongodb repo
+      ansible.builtin.copy:
+        src: mongodb.repo
+        dest: /etc/yum.repos.d/mongo.repo
+
+    - name: install monggodb
+      ansible.builtin.package:
+        name: mongodb-org-shell
+        state: present
+
 
 
 #  ansible-playbook -i inventory -e ansible_user=centos -e ansible_password=DevOps321 catalogue.yaml
