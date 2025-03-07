@@ -61,15 +61,15 @@
 
     - name: get categories count
       ansible.builtin.command:  mongo --host mongodb.appalla.shop --quiet --eval 'db = db.getSiblingDB("users"); db.users.count()'
-      register: product_count
+      register: user_count
 
     - name: print count
       ansible.builtin.debug:
-        msg: "product count :: {{product_count}}"
+        msg: "user count :: {{user_count}}"
 
     - name: load user data
       ansible.builtin.command: mongo --host mongodb.appalla.shop < /app/schema/user.js
-      when: product_count.stdout == "0" # keep double quotes
+      when: user_count.stdout == "0" # keep double quotes
 
     - name: start and enable user
       ansible.builtin.service:
