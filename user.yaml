@@ -24,14 +24,14 @@
         path: /app
         state: directory
 
-    - name: download catalogue app 
+    - name: download user app 
       ansible.builtin.get_url:
-        url: https://roboshop-builds.s3.amazonaws.com/catalogue.zip
-        dest: /tmp/catalogue.zip
+        url: https://roboshop-builds.s3.amazonaws.com/user.zip
+        dest: /tmp/user.zip
 
-    - name: extract catalogue app
+    - name: extract user app
       ansible.builtin.unarchive:
-        src: /tmp/catalogue.zip
+        src: /tmp/user.zip
         dest: /app
         remote_src: yes
 
@@ -40,10 +40,10 @@
       args:
         chdir: /app
 
-    - name: copy catalogue service
+    - name: copy user service
       ansible.builtin.copy:
-        src: catalogue.service
-        dest: /etc/systemd/system/catalogue.service
+        src: user.service
+        dest: /etc/systemd/system/user.service
 
     - name: daemon reload and start
       ansible.builtin.systemd_service:
@@ -60,22 +60,22 @@
         state: present
 
     - name: get categories count
-      ansible.builtin.command:  mongo --host mongodb.appalla.shop --quiet --eval 'db = db.getSiblingDB("catalogue"); db.products.count()'
+      ansible.builtin.command:  mongo --host mongodb.appalla.shop --quiet --eval 'db = db.getSiblingDB("users"); db.users.count()'
       register: product_count
 
     - name: print count
       ansible.builtin.debug:
         msg: "product count :: {{product_count}}"
 
-    - name: load catalogue data
-      ansible.builtin.command: mongo --host mongodb.appalla.shop < /app/schema/catalogue.js
+    - name: load user data
+      ansible.builtin.command: mongo --host mongodb.appalla.shop < /app/schema/user.js
       when: product_count.stdout == "0" # keep double quotes
 
-    - name: start and enable catalogue
+    - name: start and enable user
       ansible.builtin.service:
-        name: catalogue
+        name: user
         state: restarted
         enabled: yes
 
     
-#  ansible-playbook -i inventory -e ansible_user=centos -e ansible_password=DevOps321 catalogue.yaml
+#  ansible-playbook -i inventory -e ansible_user=centos -e ansible_password=DevOps321 user.yaml
