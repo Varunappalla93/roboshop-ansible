@@ -58,8 +58,7 @@
       ansible.builtin.package: dnf install mysql -y
 
     - name: check cities schema exists or not
-      ansible.builtin.command: mysql -h mysql.appalla.shop -uroot -p{{mysql_password}} 
-      -sN -e "SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'cities'" 
+      ansible.builtin.command:  mysql -h mysql.daws76s.online -uroot -p{{mysql_password}} -sN -e "SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'cities'"
       register: schema
 
     - name: print output
