@@ -39,19 +39,19 @@
         dest: /usr/share/nginx/html
         remote_src: yes
 
-    - name: remove nginx conf default content
-      ansibke.builtin.file:
-        path: /usr/share/nginx/html/*
+    - name: remove default nginx content
+      ansible.builtin.file:
+        path: /etc/nginx/nginx.conf
         state: absent
 
 
-    - name: Configure reverse proxy
-      ansible.builtin.copy:
+    - name: copy nginx conf
+      ansible.builtin.template:  # for jinja format in nginx.conf file {{ }}
         src: nginx.conf
         dest: /etc/nginx/nginx.conf
   
   
-    - name: start and enable nginx
+    - name: restart and enable nginx
       ansible.builtin.service:
         name: nginx
         state: restarted
