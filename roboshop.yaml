@@ -1,1 +1,106 @@
-kfjbesjkgbdfsg
+# Day 24 and 25
+
+# run this roboshop.yaml file to create and destroy EC2 instances and route 53 records and then run all mongodb.yaml, catalogue.yaml files etc in this server
+# to run/execute those files here and then login to their respective servers and check if its service is running or not, port is connected or not.
+
+# ansible-playbook -i localhost, \
+# -e '{"instances":["mongodb","catalogue","redis","user","cart","mysql","shipping","rabbitmq","payment","frontend"]}' \
+# roboshop.yaml  ->  recommended to run this without using inventory.ini file by giving hosts: all and connection as local as we
+# are running in ansible server
+
+# we also need to use aws configure in ansible server to setup IAM user to create and destroy EC2 instances and route 53 records.
+
+# to create all these servers using inventory.ini file:
+#ansible-playbook -i inventory.ini \
+# -e '{"instances":["mongodb","catalogue","redis","user","cart","mysql","shipping","rabbitmq","payment","frontend"]}' \
+# roboshop.yaml
+
+
+# pip3.9 install boto3 botocore - install this library to make python to connect to aws packages
+
+- name: create ec2 instances and route 53 records
+  hosts: all
+  connection: local
+  vars:
+    sg_id: sg-027080a66d5d9f364
+    ami_id: ami-0220d79f3f480ecf5
+    domain_name: vardevops.online
+    env: dev
+    action: create
+    instances:
+      - mongodb
+      - catalogue
+  tasks:
+    ### CREATE ###
+    - name: create ec2 instance
+      amazon.aws.ec2_instance:
+        state: present
+        instance_type: "t3.micro"
+        security_group: "{{ sg_id }}"
+        image_id: "{{ ami_id }}"
+        name: "{{ item }}-{{ env }}"
+        wait: true
+        tags: 
+          Project: roboshop
+          Component: "{{ item }}"
+          Env : "{{ env }}"
+          Name: "{{ item }}-{{ env }}"
+      loop: "{{ instances }}"
+      register: ec2_output
+      when: action == "create"
+    
+    - name: print the output
+      ansible.builtin.debug:
+        msg: "{{ ec2_output }}"
+      when: action == "create"
+
+    - name: create route53 records
+      amazon.aws.route53:
+        state: present
+        zone: "{{ domain_name }}"
+        record: "{{ item.item }}-{{ env }}.{{ domain_name }}"  # mongodb-dev.vardevops.online
+        type: A
+        ttl: 1
+        value: "{{ item.instances[0].private_ip_address }}"
+        wait: true
+        overwrite: true
+      loop: "{{ ec2_output.results }}"
+      when: action == "create"
+
+    - name: create route53 records for frontend
+      amazon.aws.route53:
+        state: present
+        zone: "{{ domain_name }}"
+        record: "roboshop-{{ env }}.{{ domain_name }}"  # roboshop-dev.vardevops.online
+        type: A
+        ttl: 1
+        value: "{{ item.instances[0].public_ip_address }}"
+        wait: true
+        overwrite: true
+      loop: "{{ ec2_output.results }}"
+      when:  # and
+        - item.item == "frontend"
+        - action == "create"
+
+    ### DESTROY ###
+    - name: delete route53 records
+      amazon.aws.route53:
+        state: absent
+        zone: "{{ domain_name }}"
+        record: "{{ item }}-{{ env }}.{{ domain_name }}" # roboshop-dev.daws88s.online
+        type: A
+        ttl: 1
+      loop: "{{ instances }}"
+      when: action == "destroy"
+
+
+    - name: delete ec2 instance
+      amazon.aws.ec2_instance:
+        state: absent
+        name: "{{ item }}-{{ env }}"
+        wait: true
+      loop: "{{ instances }}"
+      when: action == "destroy"
+
+# to destroy ec2 instances and route 53 records:
+# ansible-playbook -i inventory.ini -e action=destroy roboshop.yaml -  to destroy ec2 instances and route 53 records
