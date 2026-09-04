@@ -5,6 +5,7 @@
     sg_id: sg-0093e9cae22fdf09a
     ami_id: ami-0220d79f3f480ecf5
     env: dev
+    domain_name: vardevops.online
     instances:
       - mongodb
       - catalogue
@@ -28,5 +29,19 @@
         msg: " {{ ec2_output }}"
 
 
-# to print without using inventory.ini and use localhost directly:
+    - name: create r53 records
+      ansible.aws.route53:
+        state: present
+        zone: "{{ domain_name }}"
+        record: " {{ item.item }}-{{ env }}-{{ domain_name }}"  # mongodb-dev-vardevops.online
+        type: A 
+        ttl: 1
+        value: "{{ item.instances[0].private_ip_address }}"
+        wait: true
+      loop: "{{ ec2_output.results }}"
+
+
+
+
+# to execute playbook without using inventory.ini and use localhost directly:
 # ansible-playbook -i localhost, roboshop.yaml
