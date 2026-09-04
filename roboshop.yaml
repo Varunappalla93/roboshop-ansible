@@ -26,3 +26,7 @@
     - name: print the output
       ansible.builtin.debug:
         msg: " {{ ec2_output }}"
+
+
+# to print without using inventory.ini and use localhost directly:
+# ansible-playbook -i localhost, roboshop.yaml
