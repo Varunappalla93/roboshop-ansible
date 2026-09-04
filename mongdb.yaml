@@ -25,3 +25,8 @@ tasks:
       name: mongod
       state: started
       enabled: yes   
+
+
+
+# as we already have username and password in inventory.ini file
+# ansible-playbook -i inventory.ini mongodb.yaml
