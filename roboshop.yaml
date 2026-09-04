@@ -48,7 +48,7 @@
       amazon.aws.route53:
         state: present
         zone: "{{ domain_name }}"
-        record: "roboshop-{{ env }}.{{ domain_name }}"  # roboshop-dev-vardevops.online
+        record: "roboshop-{{ env }}.{{ domain_name }}"  # roboshop-dev.vardevops.online
         type: A 
         ttl: 1
         value: "{{ item.instances[0].public_ip_address }}"
@@ -58,13 +58,25 @@
       - item.item=="frontend"
       - action == "create"
 
+    # destroy
+    - name: delete r53 records
+      amazon.aws.route53:
+        state: absent
+        zone: "{{ domain_name }}"
+        record: "{{ item.item }}-{{ env }}.{{ domain_name }}"  # roboshop-dev-vardevops.online
+        type: A 
+        ttl: 1
+        wait: true
+      loop: "{{ instances }}"
+      when: action == 'destroy'
 
     - name: delete ec2 instances
       amazon.aws.ec2_instance:
         state: absent
         name: "{{ item }}-{{ env }}"
-        loop: "{{ instances }}"
+      loop: "{{ instances }}"
+      when: action == 'destroy'
    
-   
+
 # to execute playbook without using inventory.ini and use localhost directly:
 # ansible-playbook -i localhost, roboshop.yaml
