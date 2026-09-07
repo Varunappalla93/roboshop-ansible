@@ -80,5 +80,8 @@
    
 
 # to execute playbook without using inventory.ini and use localhost directly:
-# ansible-playbook -i localhost, -e action=destroy -e instances=['mongodb','catalogue','redis','user','cart','shipping','payment',
-# 'rabbitmq','mysql',frontend'] roboshop.yaml
+# ansible-playbook -i localhost, \
+# -e '{
+#   "action": "destroy",
+#   "instances": ["mongodb","catalogue","redis","user","cart","shipping","payment","rabbitmq","mysql","frontend"]
+# }' roboshop.yaml
