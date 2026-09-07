@@ -52,8 +52,8 @@
         path: /app
     
 
-    - name: copy catalogue service
-      ansible.builtin.copy:
+    - name: copy catalogue service  # Jinja template
+      ansible.builtin.template:
         src: catalogue.service
         dest: /etc/systemd/system/catalogue.service
 
