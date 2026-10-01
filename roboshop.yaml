@@ -60,25 +60,36 @@
       - item.item=="frontend"
       - action == "create"
 
-    # destroy
+    ### DESTROY ###
+    - name: delete r53 records for frontend
+      amazon.aws.route53:
+        state: absent
+        zone: "{{ domain_name }}"
+        record: "roboshop-{{ env }}.{{ domain_name }}" # roboshop-dev.daws88s.online
+        type: A
+        ttl: 1
+      loop: "{{ instances }}"
+      when:  # and
+      - item == "frontend"
+      - action == "destroy"
+
     - name: delete r53 records
       amazon.aws.route53:
         state: absent
         zone: "{{ domain_name }}"
-        record: "{{ item.item }}-{{ env }}.{{ domain_name }}" 
-        type: A 
+        record: "{{ item }}-{{ env }}.{{ domain_name }}" # roboshop-dev.daws88s.online
+        type: A
         ttl: 1
-        wait: true
       loop: "{{ instances }}"
-      when: action == 'destroy'
+      when: action == "destroy"
 
-    - name: delete ec2 instances
+    - name: delete ec2 instance
       amazon.aws.ec2_instance:
         state: absent
         name: "{{ item }}-{{ env }}"
         wait: false
       loop: "{{ instances }}"
-      when: action == 'destroy'
+      when: action == "destroy"
    
 
 # have to do aws configure before executing playbooks to use IAM creds
@@ -94,4 +105,10 @@
 
 #  ansible-playbook -i localhost, -e '{
 #   "instances": ["mongodb","catalogue","redis","user","cart","shipping","payment","rabbitmq","mysql","frontend"]
+# }' roboshop.yaml
+
+
+
+#  ansible-playbook -i localhost, -e '{
+#   "action":"destroy", "instances": ["mongodb","catalogue","redis","user","cart","shipping","payment","rabbitmq","mysql","frontend"]
 # }' roboshop.yaml
