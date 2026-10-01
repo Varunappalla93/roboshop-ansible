@@ -81,7 +81,7 @@
       when: action == 'destroy'
    
 
-# have to do aws configure before to use IAM creds
+# have to do aws configure before executing playbooks to use IAM creds
 
 # to execute playbook without using inventory.ini and use localhost directly:
 # ansible-playbook -i localhost, \
