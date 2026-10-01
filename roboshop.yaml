@@ -87,3 +87,9 @@
 #   "action": "destroy",
 #   "instances": ["mongodb","catalogue","redis","user","cart","shipping","payment","rabbitmq","mysql","frontend"]
 # }' roboshop.yaml
+
+
+
+#  ansible-playbook -i localhost, -e '{
+#   "instances": ["mongodb","catalogue","redis","user","cart","shipping","payment","rabbitmq","mysql","frontend"]
+# }' roboshop.yaml
