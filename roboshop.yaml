@@ -94,6 +94,8 @@
 
 # have to do aws configure before executing playbooks to use IAM creds
 
+# sudo python3 -m pip install boto3 botocore
+
 # to execute playbook without using inventory.ini and use localhost directly:
 # ansible-playbook -i localhost, \
 # -e '{
@@ -106,3 +108,5 @@
 #  ansible-playbook -i localhost, -e '{
 #   "instances": ["mongodb","catalogue","redis","user","cart","shipping","payment","rabbitmq","mysql","frontend"]
 # }' roboshop.yaml
+
+
