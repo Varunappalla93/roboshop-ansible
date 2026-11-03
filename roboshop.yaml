@@ -5,6 +5,7 @@
     sg_id: sg-0093e9cae22fdf09a
     ami_id: ami-0220d79f3f480ecf5
     env: dev
+    region: us-east-1
     action: create
     domain_name: vardevops.online
     instances:
@@ -94,7 +95,7 @@
 
 # have to do aws configure before executing playbooks to use IAM creds
 
-# sudo python3 -m pip install boto3 botocore
+# sudo python3 -m pip install boto3 botocore and sudo dnf install ansible -y
 
 # to execute playbook without using inventory.ini and use localhost directly:
 # ansible-playbook -i localhost, \
@@ -111,3 +112,7 @@
 
 
   # to run miscroservices - eg: ansible-playbook -i inventory.ini mongodb.yaml
+
+   ansible-playbook -i localhost, -e '{
+  "instances": ["mongodb","catalogue","redis","user","cart","shipping","payment","rabbitmq","mysql","frontend"]
+}' roboshop.yaml
