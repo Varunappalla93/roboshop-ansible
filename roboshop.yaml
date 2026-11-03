@@ -2,8 +2,8 @@
   hosts: all
   connection: local
   vars:
-    sg_id: sg-0093e9cae22fdf09a
-    ami_id: ami-0220d79f3f480ecf5
+    sg_id: sg-0f7bf8f718c2e1406
+    ami_id: ami-0eec78ea4cbaaf5bd
     env: dev
     region: us-east-1
     action: create
