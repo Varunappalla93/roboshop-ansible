@@ -112,7 +112,3 @@
 
 
   # to run miscroservices - eg: ansible-playbook -i inventory.ini mongodb.yaml
-
-   ansible-playbook -i localhost, -e '{
-  "instances": ["mongodb","catalogue","redis","user","cart","shipping","payment","rabbitmq","mysql","frontend"]
-}' roboshop.yaml
