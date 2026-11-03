@@ -113,4 +113,11 @@
 # }' roboshop.yaml
 
 
-  # to run miscroservices - eg: ansible-playbook -i inventory.ini mongodb.yaml
+# ansible-playbook -i localhost, \
+# -e action=destroy \
+# -e '{"instances":["mongodb","catalogue","redis","user","cart","shipping","payment","rabbitmq","mysql","frontend"]}' \
+# -e "ansible_python_interpreter=$HOME/ansible-venv/bin/python" \
+# roboshop.yaml
+
+
+# to run miscroservices - eg: ansible-playbook -i inventory.ini mongodb.yaml
